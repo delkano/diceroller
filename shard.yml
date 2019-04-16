@@ -1,0 +1,21 @@
+name: roll 
+version: 0.1.0
+
+authors:
+  - Diego Cano <dcano@blepstudio.es>
+
+description: |
+  Basic dice roller
+
+dependencies:
+    libui:
+        github: fusion/libui.cr
+#   pg:
+#     github: will/crystal-pg
+#     version: "~> 0.5"
+
+# development_dependencies:
+#   webmock:
+#     github: manastech/webmock.cr
+
+# license: MIT

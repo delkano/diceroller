@@ -1,0 +1,13 @@
+windows:
+- window: Dice Roller
+  name: libui_control_gallery
+  margin: 1
+  children:
+  - vertical_box:
+    padded: 1
+    children:
+    - horizontal_box:
+      name: contains_children
+      padded: 1
+      stretched: 1
+

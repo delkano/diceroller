@@ -1,0 +1,6 @@
+version: 1.0
+shards:
+  libui:
+    github: fusion/libui.cr
+    commit: a589a6c68cc363662c39be210903b4429c6ae7dc
+
