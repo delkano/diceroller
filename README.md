@@ -11,24 +11,24 @@ It uses [https://github.com/Fusion/libui.cr](libui) for the GUI.
 
 Usage is simple. You just invoke it with
 
-   roll
+    roll
 
 which will load the interface. You can write the roll descriptor on the text field and press the `Roll!` button to get the results.
 
 Roll descriptors are of the form:
 
-   expression [expression]*
+    expression [expression]*
 
-   with
+    with
 
-   expression := dice[<+|->dice]*
-   dice := <number>[<a|d><number>]
+    expression := dice[<+|->dice]*
+    dice := <number>[<a|d><number>]
 
 Examples: 
 
-   1d6 : Roll 1 die of 6 sides
-   4d4+3 : Roll 4 dice of 4 sides each, sum the results, and add 3 to that 
-   1a8 3d10: Roll 1 die of 8 sides, with explosions, then 3 dice of 10 sides, add these results, and show both rolls individually
+    1d6 : Roll 1 die of 6 sides
+    4d4+3 : Roll 4 dice of 4 sides each, sum the results, and add 3 to that 
+    1a8 3d10: Roll 1 die of 8 sides, with explosions, then 3 dice of 10 sides, add these results, and show both rolls individually
 
 `explosions` mean that, if the result is the maximum value for the die, it gets rolled again and the totals are added. Ex., a 6 on a 6-sided die means a new roll, which yields let's say a 3, result is 6+3=9.
 
