@@ -1,6 +1,8 @@
 require "option_parser"
-require "ini"
 require "libui/libui"
+
+require "./config"
+require "./roller"
 
 class RollerUI
     # Copied from examples
@@ -40,26 +42,16 @@ class RollerUI
 
             UI.label_set_text @@results, label
         }
-        on_custom_clicked = ->(s : UI::Button*, data : Void*) {
-            buttons = @@config.as(Config).buttonset
-            value = buttons[String.new(UI.button_text(s))]
-
-            roller = @@roller.as(Roller)
-            res = roller.parseLine(value)
-
-            label = res.join("\n")
-
-            UI.entry_set_text @@entry, value
-            UI.label_set_text @@results, label
-        }
         on_set_selected = ->(s : UI::Combobox*, data : Void*) {
             conf = @@config.as(Config)
             i = UI.combobox_selected @@buttonselector
             sets = conf.sets
             conf.switchModel sets[i]
             conf.save
-            UI.control_destroy ui_control(@@mainwin.not_nil!)
-            reloadUI
+
+            #UI.control_destroy(@@buttons.as(Pointer(UI::Control)))
+            UI.box_delete(@@box, 3)
+            @@buttons = RollerUI.createButtonBox(@@box).as(UI::Box*)
         }
 
         # UI describing
@@ -68,7 +60,8 @@ class RollerUI
         UI.window_set_margined mainwin, 1
         UI.window_on_closing mainwin, on_closing, nil
 
-        box = UI.new_vertical_box
+        @@box = UI.new_vertical_box
+        box = @@box.not_nil!
         UI.box_set_padded box, 1
         UI.window_set_child mainwin, ui_control(box)
 
@@ -108,16 +101,7 @@ class RollerUI
         UI.combobox_on_selected buttonselector, on_set_selected, nil
         UI.box_append box, ui_control(buttonselector), 1
 
-        # Custom, config-loaded buttons
-        buttonbox = UI.new_horizontal_box
-        UI.box_set_padded buttonbox, 1
-        UI.box_append box, ui_control(buttonbox), 1
-        @@config.as(Config).buttonset.each {|label, value| 
-            button = UI.new_button(label)
-            UI.button_on_clicked button, on_custom_clicked, value
-            UI.box_append buttonbox, ui_control(button), 1
-        }
-        
+        @@buttons = RollerUI.createButtonBox(box).as(UI::Box*)
         # UI described
 
         #ends mine
@@ -127,121 +111,32 @@ class RollerUI
         UI.main
         UI.uninit
     end
-end
 
-class Roller
-    # parses a line of text describing one or more dice rolls
-    # returns an array of strings, each the relevant arg, a period, and the result
-    def parseLine(line)
-        begin
-            ret = [] of String
-            if line
-                line.split { |roll|
-                    res = self.parseRoll roll
-                    ret.push roll+": "+res.to_s
-                }
-            end
-            return ret
-        rescue
-            return ["Error: Bad roll descriptor"]
-        end
-    end
+    def self.createButtonBox(box : UI::Box*|Nil) : UI::Box*
+        on_custom_clicked = ->(s : UI::Button*, data : Void*) {
+            buttons = @@config.as(Config).buttonset
+            value = buttons[String.new(UI.button_text(s))]
 
-    # parses a dice descriptor string
-    def parseRoll(line)
-        total = 0
-        if line
-            line.split("+") { |part| 
-                parts = part.split("-")
-                head = parts.shift
-                total += self.parseDie head
-                parts.each { |die| 
-                    total -= self.parseDie die
-                }
-            }
-        end
-        return total
-    end
+            roller = @@roller.as(Roller)
+            res = roller.parseLine(value)
 
-    # parses a one die type string
-    def parseDie(line)
-        explodes = line.includes? "a"
-        letter = explodes ? /a|A/ : /d|D/
-        parts = line.split(letter)
-        return line.to_i if parts.size == 1
-        type = parts[1].to_i
-        total = 0;
-        parts[0].to_i.times {
-            roll = 1+rand(type)
-            total += roll
-            if explodes 
-                while roll == type
-                    roll = 1+rand(type)
-                    total += roll
-                end
-            end
+            label = res.join("\n")
+
+            UI.entry_set_text @@entry, value
+            UI.label_set_text @@results, label
         }
-        return total
-    end
 
-end
-
-class Config 
-    property filename : String
-    property conf : Hash(String, Hash(String,String))
-    getter buttonset : Hash(String, String)
-    getter model : String
-    
-    def initialize(filename : String)
-        @filename = filename
-
-        default = {
-            "general" => {
-                "model" => "basic"
-            },
-            "basic" => {
-                "d4" => "1d4",
-                "d6" => "1d6",
-                "d8" => "1d8",
-                "d10" => "1d10",
-                "d12" => "1d12",
-                "d20" => "1d20"
-            }
+        # Custom, config-loaded buttons
+        buttonbox = UI.new_horizontal_box
+        UI.box_set_padded buttonbox, 1
+        UI.box_append box, ui_control(buttonbox), 1
+        @@config.as(Config).buttonset.each {|label, value| 
+            button = UI.new_button(label)
+            UI.button_on_clicked button, on_custom_clicked, value
+            UI.box_append buttonbox, ui_control(button), 1
         }
-        @conf = default
-        @model = "basic"
-        @buttonset = @conf[@model]
-    end
 
-    def load
-        if File.exists? @filename
-            content = File.read(@filename)
-            @conf = INI.parse(content)
-
-            if @conf["general"]["model"]
-                @model = @conf["general"]["model"]
-            else
-                @model = "basic"
-            end
-            @buttonset = @conf[@model]
-        end
-    end
-
-    def sets
-        keys = @conf.keys
-        keys.shift
-        return keys
-    end
-
-    def switchModel(name : String)
-        @model = name
-        @buttonset = @conf[@model]
-    end
-
-    def save
-        @conf["general"]["model"] = @model
-        content = INI.build @conf
-        File.write(@filename, content)
+        return buttonbox
     end
 end
 

@@ -1,6 +1,18 @@
 version: 1.0
 shards:
+  hedron:
+    github: hedron-crystal/hedron
+    commit: cc5af0ec6db066f5f47121315b29342afc6102f2
+
   libui:
     github: fusion/libui.cr
     commit: a589a6c68cc363662c39be210903b4429c6ae7dc
+
+  stumpy_core:
+    github: stumpycr/stumpy_core
+    version: 1.8.3
+
+  stumpy_png:
+    github: stumpycr/stumpy_png
+    version: 4.4.1
 

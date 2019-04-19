@@ -10,12 +10,13 @@ description: |
 dependencies:
     libui:
         github: fusion/libui.cr
-#   pg:
-#     github: will/crystal-pg
-#     version: "~> 0.5"
+    hedron:
+        github: hedron-crystal/hedron
 
-# development_dependencies:
-#   webmock:
-#     github: manastech/webmock.cr
+targets:
+    roll:
+        main: src/roll.cr
+    rollHedron:
+        main: src/hedron.cr
 
-# license: MIT
+license: MIT
