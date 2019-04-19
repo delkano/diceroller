@@ -1,7 +1,7 @@
 # Dice Roller
 
 This is a simple dice roller written as an exercise to learn Crystal.
-It uses [https://github.com/Fusion/libui.cr](libui) for the GUI.
+It uses [libui.cr](https://github.com/Fusion/libui.cr) for the GUI.
 
 ## Installation
 
