@@ -1,11 +1,17 @@
 # Dice Roller
 
 This is a simple dice roller written as an exercise to learn Crystal.
-It uses [https://github.com/Fusion/libui.cr](libui) for the GUI.
+It uses [libui.cr](https://github.com/Fusion/libui.cr) for the GUI. I've also written a second version of the GUI with [hedron](https://github.com/hedron-crystal/hedron).
 
 ## Installation
 
+Assuming you have `crystal` installed, simply "git clone" it:
 
+    git clone https://github.com/delkano/diceroller.git
+
+Then enter the directory and `shards build`
+
+You'll find two executables under the `bin/` folder: `roll` and `rollHedron`. First one uses `libui.cr` directly, second one uses `hedron`. 
 
 ## Usage
 
