@@ -60,6 +60,7 @@ class RollerUI < Hedron::Application
         @entry = Hedron::Entry.new
         entry = @entry.not_nil!
         entry.text = "Dice descriptor"
+        entry.stretchy = true
         roll = Hedron::Button.new("Roll!")
 
         hbox.push(
@@ -69,6 +70,7 @@ class RollerUI < Hedron::Application
 
         @label = Hedron::Label.new("")
         label = @label.not_nil!
+        label.stretchy = true
         box.push(label)
 
         cbox = Hedron::Combobox.new
