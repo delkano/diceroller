@@ -37,7 +37,8 @@ class Roller
         explodes = line.includes? "a"
         letter = explodes ? /a|A/ : /d|D/
         parts = line.split(letter)
-        return line.to_i if parts.size == 1
+        return line.to_i if parts.size == 1 # ints are returned as is
+        parts[0] = "1" if parts[0] == "" # d4 == 1d4
         type = parts[1].to_i
         total = 0;
         parts[0].to_i.times {

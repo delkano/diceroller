@@ -39,6 +39,12 @@ class RollerUI < Hedron::Application
         @label.not_nil!.text = label
         @entry.not_nil!.text = value
     end
+    def on_roll(this)
+        value = @entry.not_nil!.text
+        results = @roller.not_nil!.parseLine(value)
+        label = results.join("\n")
+        @label.not_nil!.text = label
+    end
 
     def draw
         self.on_stop = ->should_quit
@@ -62,6 +68,7 @@ class RollerUI < Hedron::Application
         entry.text = "Dice descriptor"
         entry.stretchy = true
         roll = Hedron::Button.new("Roll!")
+        roll.on_click = -> on_roll(Hedron::Button)
 
         hbox.push(
             entry,
